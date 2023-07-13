@@ -1,0 +1,3988 @@
+[
+    {
+        "id": "dd347681f42c4e85",
+        "type": "tab",
+        "label": "Flow 6",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "26fd94e3dc6f76cd",
+        "type": "ui_form",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "label": "Order Form",
+        "group": "622fb383e47532c8",
+        "order": 2,
+        "width": 4,
+        "height": 1,
+        "options": [
+            {
+                "label": "CustomerID",
+                "value": "CustomerID",
+                "type": "number",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Basketball",
+                "value": "Product1",
+                "type": "number",
+                "required": false,
+                "rows": null
+            },
+            {
+                "label": "Football",
+                "value": "Product2",
+                "type": "number",
+                "required": false,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "CustomerID": "",
+            "Product1": "",
+            "Product2": ""
+        },
+        "payload": "",
+        "submit": "submit",
+        "cancel": "cancel",
+        "topic": "topic",
+        "topicType": "msg",
+        "splitLayout": "",
+        "className": "",
+        "x": 90,
+        "y": 160,
+        "wires": [
+            [
+                "6cbc1cc3377a398c",
+                "19dc32cc13e91bce",
+                "894295fabba290b3",
+                "8d7d9ce335898a63"
+            ]
+        ]
+    },
+    {
+        "id": "b2cb3283305a353d",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "INSERT quantity 1",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nvar quantityNumber = flow.get(\"quantity1\");\nvar quantity2Number = flow.get(\"quantity2\");\nvar customerID = flow.get(\"customerID\");\n\nif (quantityNumber > 0 && quantity2Number == null){\n    var maxSSD = flow.get(\"orderSSD\") + 1;\n\n    var maxOrdernumber = flow.get(\"orderNumber\") + 1;\n\n    msg.topic =\n        \"USE jordan_onlineshop_new; INSERT INTO jordan_onlineshop_new.Order(Order_SSD, Order_Date, Order_Quantity, Order_Number, Order_ProductID, Order_ShipStatus, Order_CustomerID, Order_PaymentStatus) VALUE ('\" + maxSSD + \"','\" + date + \"', + '\" + quantityNumber + \"' , '\" + maxOrdernumber + \"', '1', 'N', '\" + customerID + \"', 'N');\";\n}\n\nelse if (quantity2Number > 0 && quantityNumber == null) {\n    var maxSSD = flow.get(\"orderSSD\") + 1;\n\n    var maxOrdernumber = flow.get(\"orderNumber\") + 1;\n\n    msg.topic =\n        \"USE jordan_onlineshop_new; INSERT INTO jordan_onlineshop_new.Order(Order_SSD, Order_Date, Order_Quantity, Order_Number, Order_ProductID, Order_ShipStatus, Order_CustomerID, Order_PaymentStatus) VALUE ('\" + maxSSD + \"','\" + date + \"', + '\" + quantity2Number + \"' , '\" + maxOrdernumber + \"', '2', 'N', '\" + customerID + \"', 'N');\";\n}\n\nelse if (quantity2Number > 0 && quantityNumber > 0) {\n    var maxSSD = flow.get(\"orderSSD\") + 1;\n    var maxSSD2 = flow.get(\"orderSSD\") + 2;\n\n    var maxOrdernumber = flow.get(\"orderNumber\") + 1;\n\n    msg.topic =\n        \"USE jordan_onlineshop_new; INSERT INTO jordan_onlineshop_new.Order(Order_SSD, Order_Date, Order_Quantity, Order_Number, Order_ProductID, Order_ShipStatus, Order_CustomerID, Order_PaymentStatus) VALUE ('\" + maxSSD + \"','\" + date + \"', + '\" + quantityNumber + \"' , '\" + maxOrdernumber + \"', '1', 'N', '\" + customerID + \"', 'N'), ('\" + maxSSD2 + \"','\" + date + \"', + '\" + quantity2Number + \"' , '\" + maxOrdernumber + \"', '2', 'N', '\" + customerID + \"', 'N');\";\n}\n\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1890,
+        "y": 120,
+        "wires": [
+            [
+                "d7b8f0201c4191f4"
+            ]
+        ]
+    },
+    {
+        "id": "d7b8f0201c4191f4",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 2150,
+        "y": 120,
+        "wires": [
+            [
+                "eb685bc5969ef15d",
+                "963512f49f0f4986"
+            ]
+        ]
+    },
+    {
+        "id": "e389a2aad78de468",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Find the max orderSSD",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nmsg.topic = \n    \"USE jordan_onlineshop_new; SELECT Order_SSD FROM jordan_onlineshop_new.Order ORDER BY Order_SSD DESC LIMIT 1;\";\n    \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1110,
+        "y": 80,
+        "wires": [
+            [
+                "e8810cfa9cbd435c"
+            ]
+        ]
+    },
+    {
+        "id": "e8810cfa9cbd435c",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 1370,
+        "y": 40,
+        "wires": [
+            [
+                "7d2fba200c0a26a6"
+            ]
+        ]
+    },
+    {
+        "id": "6cbc1cc3377a398c",
+        "type": "change",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "quantity1",
+                "pt": "flow",
+                "to": "payload[\"Product1\"]",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 310,
+        "y": 20,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "894295fabba290b3",
+        "type": "change",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "quantity2",
+                "pt": "flow",
+                "to": "payload[\"Product2\"]",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 310,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "19dc32cc13e91bce",
+        "type": "change",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "customerID",
+                "pt": "flow",
+                "to": "payload[\"CustomerID\"]",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 320,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "437e24998e648deb",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Find the max orderNumber",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nmsg.topic = \n    \"USE jordan_onlineshop_new; SELECT Order_Number FROM jordan_onlineshop_new.Order ORDER BY Order_Number DESC LIMIT 1;\";\n    \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1820,
+        "y": 40,
+        "wires": [
+            [
+                "a0cfa36b454a8683"
+            ]
+        ]
+    },
+    {
+        "id": "7d2fba200c0a26a6",
+        "type": "change",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "orderSSD",
+                "pt": "flow",
+                "to": "payload[1][0].Order_SSD",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1590,
+        "y": 40,
+        "wires": [
+            [
+                "437e24998e648deb"
+            ]
+        ]
+    },
+    {
+        "id": "a0cfa36b454a8683",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 2070,
+        "y": 40,
+        "wires": [
+            [
+                "45195ceeabdc177b"
+            ]
+        ]
+    },
+    {
+        "id": "45195ceeabdc177b",
+        "type": "change",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "orderNumber",
+                "pt": "flow",
+                "to": "payload[1][0].Order_Number",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1600,
+        "y": 120,
+        "wires": [
+            [
+                "b2cb3283305a353d"
+            ]
+        ]
+    },
+    {
+        "id": "1861e53b50ec5897",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "INSERT quantity 2",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nvar quantity1Number = flow.get(\"quantity1\");\nvar quantityNumber = flow.get(\"quantity2\");\nvar customerID = flow.get(\"customerID\");\n\nif (quantity1Number == 0){\n    if (quantityNumber > 0) {\n        var maxSSD = flow.get(\"orderSSD\") + 1;\n\n        var maxOrdernumber = flow.get(\"orderNumber\") + 1;\n\n        msg.topic =\n            \"USE jordan_onlineshop_new; INSERT INTO jordan_onlineshop_new.Order(Order_SSD, Order_Date, Order_Quantity, Order_Number, Order_ProductID, Order_ShipStatus, Order_CustomerID, Order_PaymentStatus) VALUE ('\" + maxSSD + \"','\" + date + \"', + '\" + quantityNumber + \"' , '\" + maxOrdernumber + \"', '2', 'N', '\" + customerID + \"', 'N');\";\n    }\n\n\n}\n\nelse if (quantity1Number == null){\n    if (quantityNumber > 0) {\n        var maxSSD = flow.get(\"orderSSD\") + 1;\n\n        var maxOrdernumber = flow.get(\"orderNumber\") + 1;\n\n        msg.topic =\n            \"USE jordan_onlineshop_new; INSERT INTO jordan_onlineshop_new.Order(Order_SSD, Order_Date, Order_Quantity, Order_Number, Order_ProductID, Order_ShipStatus, Order_CustomerID, Order_PaymentStatus) VALUE ('\" + maxSSD + \"','\" + date + \"', + '\" + quantityNumber + \"' , '\" + maxOrdernumber + \"', '2', 'N', '\" + customerID + \"', 'N');\";\n    }\n}\n\nelse if (quantityNumber > 0){\n    var maxSSD = flow.get(\"orderSSD\") + 2;\n\n    var maxOrdernumber = flow.get(\"orderNumber\") + 1;\n\n    msg.topic =\n        \"USE jordan_onlineshop_new; INSERT INTO jordan_onlineshop_new.Order(Order_SSD, Order_Date, Order_Quantity, Order_Number, Order_ProductID, Order_ShipStatus, Order_CustomerID, Order_PaymentStatus) VALUE ('\" + maxSSD + \"','\" + date + \"', + '\" + quantityNumber + \"' , '\" + maxOrdernumber + \"', '2', 'N', '\" + customerID + \"', 'N');\";\n}\n\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1890,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7287f876155be891",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "find array length",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\n\n\nmsg.payload = Object.keys(msg.payload).length\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1080,
+        "y": 1080,
+        "wires": [
+            [
+                "c442cac197458337"
+            ]
+        ]
+    },
+    {
+        "id": "eb685bc5969ef15d",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Read data from MYSQL",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nvar orderNumber = flow.get(\"orderNumber\") + 1;\n\n    msg.topic =\n        \"USE jordan_onlineshop_new; SELECT jordan_onlineshop_new.Order.Order_Quantity, jordan_onlineshop_new.Product.Product_Name, jordan_onlineshop_new.Product.Product_Price, jordan_onlineshop_new.Product.Product_Price * jordan_onlineshop_new.Order.Order_Quantity AS TotalPrice FROM jordan_onlineshop_new.Order JOIN jordan_onlineshop_new.Product ON jordan_onlineshop_new.Order.Order_ProductID = jordan_onlineshop_new.Product.Product_ID WHERE Order_Number = '\" + orderNumber + \"' ;\";\n\n\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2430,
+        "y": 120,
+        "wires": [
+            [
+                "1eec79c6d1ea7a60"
+            ]
+        ]
+    },
+    {
+        "id": "1eec79c6d1ea7a60",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 2370,
+        "y": 200,
+        "wires": [
+            [
+                "09a349451cff5eaf",
+                "f523b691c4198f8f",
+                "210ffda27f94d5b9"
+            ]
+        ]
+    },
+    {
+        "id": "09a349451cff5eaf",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "display order detail",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nmsg.payload = msg.payload[1]\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2610,
+        "y": 280,
+        "wires": [
+            [
+                "a5646c710fdd8551",
+                "80c210b304b8239f"
+            ]
+        ]
+    },
+    {
+        "id": "a5646c710fdd8551",
+        "type": "ui_table",
+        "z": "dd347681f42c4e85",
+        "group": "cd6c3df02b4c96ad",
+        "name": "Customer Payment",
+        "order": 5,
+        "width": 20,
+        "height": 5,
+        "columns": [
+            {
+                "field": "Product_Name",
+                "title": "Product Name",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "Order_Quantity",
+                "title": "Quantity",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "Product_Price",
+                "title": "Unit Price",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "TotalPrice",
+                "title": "Total Price",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            }
+        ],
+        "outputs": 0,
+        "cts": false,
+        "x": 2850,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "f655756642b67246",
+        "type": "ui_text",
+        "z": "dd347681f42c4e85",
+        "group": "cd6c3df02b4c96ad",
+        "order": 1,
+        "width": 4,
+        "height": 1,
+        "name": "",
+        "label": "Customer ID:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 2830,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "f523b691c4198f8f",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "display customer ID",
+        "func": "msg.payload = flow.get(\"customerID\")\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2620,
+        "y": 240,
+        "wires": [
+            [
+                "f655756642b67246"
+            ]
+        ]
+    },
+    {
+        "id": "210ffda27f94d5b9",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "display order Number",
+        "func": "msg.payload = flow.get(\"orderNumber\") + 1\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2620,
+        "y": 200,
+        "wires": [
+            [
+                "8144f61af4353297"
+            ]
+        ]
+    },
+    {
+        "id": "8144f61af4353297",
+        "type": "ui_text",
+        "z": "dd347681f42c4e85",
+        "group": "cd6c3df02b4c96ad",
+        "order": 3,
+        "width": 4,
+        "height": 1,
+        "name": "",
+        "label": "Order Number:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 2840,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "c9cd8605ec2f0e14",
+        "type": "ui_button",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "group": "cd6c3df02b4c96ad",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Payment Confirm",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 90,
+        "y": 340,
+        "wires": [
+            [
+                "df574e8643c9899c",
+                "02056ac23299b5c5",
+                "d5ceb42c2df146c1"
+            ]
+        ]
+    },
+    {
+        "id": "df574e8643c9899c",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "UPDATE payment status",
+        "func": "var orderNumber = flow.get(\"orderNumber\") + 1;\n\nmsg.topic = \n\"USE jordan_onlineshop_new; UPDATE jordan_onlineshop_new.Order SET Order_PaymentStatus = 'Y' WHERE jordan_onlineshop_new.Order.Order_Number = \" + orderNumber +\"\";\n//mas.payload = [new Date()];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 340,
+        "wires": [
+            [
+                "0a55a6733bfff378"
+            ]
+        ]
+    },
+    {
+        "id": "0a55a6733bfff378",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 610,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8d7d9ce335898a63",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Find the max customerID",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nmsg.topic = \n    \"USE jordan_onlineshop_new; SELECT Customer_ID FROM jordan_onlineshop_new.Customer ORDER BY Customer_ID DESC LIMIT 1;\";\n    \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 140,
+        "wires": [
+            [
+                "a85e518aad2ae90b"
+            ]
+        ]
+    },
+    {
+        "id": "a85e518aad2ae90b",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 590,
+        "y": 40,
+        "wires": [
+            [
+                "8bd1fa90dc7c7d81"
+            ]
+        ]
+    },
+    {
+        "id": "8bd1fa90dc7c7d81",
+        "type": "change",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "maxCustomerID",
+                "pt": "flow",
+                "to": "payload[1][0].Customer_ID",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 830,
+        "y": 40,
+        "wires": [
+            [
+                "2c144034908b7f5a"
+            ]
+        ]
+    },
+    {
+        "id": "6c90f0d60d01a0f8",
+        "type": "switch",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "True",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "wrongID",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "wronginput",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 790,
+        "y": 120,
+        "wires": [
+            [
+                "e389a2aad78de468",
+                "f6fb802655cbfd1b"
+            ],
+            [
+                "44746a02405debb0"
+            ],
+            [
+                "3593f385845acc26"
+            ]
+        ]
+    },
+    {
+        "id": "2c144034908b7f5a",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Test error",
+        "func": "\nvar customerID = flow.get(\"customerID\")\nvar maxCustomerID = flow.get(\"maxCustomerID\")\nvar quantity1 = flow.get(\"quantity1\")\nvar quantity2 = flow.get(\"quantity2\")\n\nif (customerID > maxCustomerID){\n    msg.topic = \"wrongID\"\n\n}\n\nelse if (quantity1 == null) {\n    if (quantity2 == null) {\n        msg.topic = \"wronginput\"\n    }\n    else if (quantity2 == 0){\n        msg.topic = \"wronginput\"\n    }\n    else{\n        msg.topic = \"True\"\n    }\n}\n\nelse if (quantity1 == 0) {\n    if (quantity2 == null) {\n        msg.topic = \"wronginput\"\n    }\n    else if (quantity2 == 0){\n        msg.topic = \"wronginput\"\n    }\n    else {\n        msg.topic = \"True\"\n    }\n}\n\nelse{\n    msg.topic = \"True\"\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 620,
+        "y": 120,
+        "wires": [
+            [
+                "6c90f0d60d01a0f8"
+            ]
+        ]
+    },
+    {
+        "id": "133efed2425e40d0",
+        "type": "ui_text",
+        "z": "dd347681f42c4e85",
+        "group": "622fb383e47532c8",
+        "order": 1,
+        "width": 4,
+        "height": 1,
+        "name": "Message",
+        "label": "",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "x": 1340,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "44746a02405debb0",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Wrong ID message",
+        "func": "msg.payload = \"Wrong ID number\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1090,
+        "y": 180,
+        "wires": [
+            [
+                "133efed2425e40d0"
+            ]
+        ]
+    },
+    {
+        "id": "f6fb802655cbfd1b",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Success message",
+        "func": "msg.payload = \"Success\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1090,
+        "y": 140,
+        "wires": [
+            [
+                "133efed2425e40d0"
+            ]
+        ]
+    },
+    {
+        "id": "3593f385845acc26",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Wrong input message",
+        "func": "msg.payload = \"Wronginput\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1100,
+        "y": 220,
+        "wires": [
+            [
+                "133efed2425e40d0"
+            ]
+        ]
+    },
+    {
+        "id": "02056ac23299b5c5",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Paymentr success message",
+        "func": "msg.payload = \"Payment success\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 420,
+        "wires": [
+            [
+                "93b387a3166a7e64"
+            ]
+        ]
+    },
+    {
+        "id": "93b387a3166a7e64",
+        "type": "ui_text",
+        "z": "dd347681f42c4e85",
+        "group": "cd6c3df02b4c96ad",
+        "order": 10,
+        "width": 4,
+        "height": 1,
+        "name": "Message",
+        "label": "",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "x": 540,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "80c210b304b8239f",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "display total amount",
+        "func": "var arrNumber = Object.keys(msg.payload).length\nvar price1 = 0\nvar price2 = 0\n\nif (arrNumber == 1){\n    price1 = msg.payload[0].TotalPrice\n}\n\nif (arrNumber == 2){\n    price1 = msg.payload[0].TotalPrice\n    price2 = msg.payload[1].TotalPrice\n}\n\nmsg.payload = price1 + price2\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2640,
+        "y": 360,
+        "wires": [
+            [
+                "8c798f2a360ecc2f",
+                "65995a01df82b9d7"
+            ]
+        ]
+    },
+    {
+        "id": "8c798f2a360ecc2f",
+        "type": "ui_text",
+        "z": "dd347681f42c4e85",
+        "group": "cd6c3df02b4c96ad",
+        "order": 7,
+        "width": 4,
+        "height": 1,
+        "name": "",
+        "label": "Total Price:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 2870,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "40e6ac90c8d23a3e",
+        "type": "ui_form",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "label": "Order checking - Customer Order",
+        "group": "a18e0ba38e35c5bc",
+        "order": 1,
+        "width": 6,
+        "height": 1,
+        "options": [
+            {
+                "label": "OrderNumber",
+                "value": "OrderNumber",
+                "type": "number",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "OrderNumber": ""
+        },
+        "payload": "",
+        "submit": "submit",
+        "cancel": "cancel",
+        "topic": "topic",
+        "topicType": "msg",
+        "splitLayout": "",
+        "className": "",
+        "x": 140,
+        "y": 560,
+        "wires": [
+            [
+                "20ce1eaeebd2f735",
+                "0294149e2b762d05",
+                "e811c86aa9840604"
+            ]
+        ]
+    },
+    {
+        "id": "20ce1eaeebd2f735",
+        "type": "change",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "checkOrderNumber",
+                "pt": "flow",
+                "to": "payload[\"OrderNumber\"]",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 500,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3eef9e1c1bb8e81a",
+        "type": "change",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "checkCustomerID",
+                "pt": "flow",
+                "to": "payload[\"CustomerID\"]",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9ea9696637a739cd",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Read data from MYSQL",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nvar orderNumber = flow.get(\"checkOrderNumber\");\nvar customerID = flow.get(\"checkCustomerID\");\n\nif (orderNumber != null){\n    if (customerID != null) {\n        msg.topic =\n            \"USE jordan_onlineshop_new; SELECT jordan_onlineshop_new.Order.Order_Number, jordan_onlineshop_new.Order.Order_ShipmentID, jordan_onlineshop_new.Order.Order_Date, jordan_onlineshop_new.Order.Order_Quantity, jordan_onlineshop_new.Product.Product_Name, jordan_onlineshop_new.Product.Product_Price, jordan_onlineshop_new.Product.Product_Price * jordan_onlineshop_new.Order.Order_Quantity AS TotalPrice, jordan_onlineshop_new.Order.Order_PaymentStatus, jordan_onlineshop_new.Order.Order_ShipStatus FROM jordan_onlineshop_new.Order JOIN jordan_onlineshop_new.Product ON jordan_onlineshop_new.Order.Order_ProductID = jordan_onlineshop_new.Product.Product_ID WHERE Order_Number = '\" + orderNumber + \"' and Order_CustomerID = '\" + customerID + \"';\";\n    }\n    else {\n        msg.topic =\n            \"USE jordan_onlineshop_new; SELECT jordan_onlineshop_new.Order.Order_Number, jordan_onlineshop_new.Order.Order_ShipmentID, jordan_onlineshop_new.Order.Order_Date, jordan_onlineshop_new.Order.Order_Quantity, jordan_onlineshop_new.Product.Product_Name, jordan_onlineshop_new.Product.Product_Price, jordan_onlineshop_new.Product.Product_Price * jordan_onlineshop_new.Order.Order_Quantity AS TotalPrice, jordan_onlineshop_new.Order.Order_PaymentStatus, jordan_onlineshop_new.Order.Order_ShipStatus FROM jordan_onlineshop_new.Order JOIN jordan_onlineshop_new.Product ON jordan_onlineshop_new.Order.Order_ProductID = jordan_onlineshop_new.Product.Product_ID WHERE Order_Number = '\" + orderNumber + \"' ;\";\n\n    }\n\n}\n\nelse if (customerID != null) {\n\n            msg.topic =\n                \"USE jordan_onlineshop_new; SELECT jordan_onlineshop_new.Order.Order_Number, jordan_onlineshop_new.Order.Order_ShipmentID, jordan_onlineshop_new.Order.Order_Date, jordan_onlineshop_new.Order.Order_Quantity, jordan_onlineshop_new.Product.Product_Name, jordan_onlineshop_new.Product.Product_Price, jordan_onlineshop_new.Product.Product_Price * jordan_onlineshop_new.Order.Order_Quantity AS TotalPrice, jordan_onlineshop_new.Order.Order_PaymentStatus, jordan_onlineshop_new.Order.Order_ShipStatus FROM jordan_onlineshop_new.Order JOIN jordan_onlineshop_new.Product ON jordan_onlineshop_new.Order.Order_ProductID = jordan_onlineshop_new.Product.Product_ID WHERE Order_CustomerID = '\" + customerID + \"';\";\n\n        }\n\n\n\nelse{\n    msg.topic =\n     \"USE jordan_onlineshop_new; SELECT jordan_onlineshop_new.Order.Order_Number, jordan_onlineshop_new.Order.Order_ShipmentID, jordan_onlineshop_new.Order.Order_Date, jordan_onlineshop_new.Order.Order_Quantity, jordan_onlineshop_new.Product.Product_Name, jordan_onlineshop_new.Product.Product_Price, jordan_onlineshop_new.Product.Product_Price * jordan_onlineshop_new.Order.Order_Quantity AS TotalPrice, jordan_onlineshop_new.Order.Order_PaymentStatus, jordan_onlineshop_new.Order.Order_ShipStatus FROM jordan_onlineshop_new.Order JOIN jordan_onlineshop_new.Product ON jordan_onlineshop_new.Order.Order_ProductID = jordan_onlineshop_new.Product.Product_ID WHERE Order_Number = '\" + orderNumber + \"' ;\";\n\n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1170,
+        "y": 640,
+        "wires": [
+            [
+                "510123569c1b0563"
+            ]
+        ]
+    },
+    {
+        "id": "b6a06dbe1d2e354a",
+        "type": "ui_table",
+        "z": "dd347681f42c4e85",
+        "group": "ba6520daf462ba9e",
+        "name": "Order Checking - Customer",
+        "order": 1,
+        "width": 23,
+        "height": 5,
+        "columns": [
+            {
+                "field": "Order_Date",
+                "title": "Order Date",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "Order_Number",
+                "title": "Order Number",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "Product_Name",
+                "title": "Name",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "Order_Quantity",
+                "title": "Quantity",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "Product_Price",
+                "title": "Unit Price",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "TotalPrice",
+                "title": "Total Amount",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "Order_PaymentStatus",
+                "title": "Payment Status",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "Order_ShipStatus",
+                "title": "Shipment Status",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "Order_ShipmentID",
+                "title": "Shipment ID",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            }
+        ],
+        "outputs": 0,
+        "cts": false,
+        "x": 1920,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "03692e8eeb557b44",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 710,
+        "y": 660,
+        "wires": [
+            [
+                "9a0d4c7c9fd9f659"
+            ]
+        ]
+    },
+    {
+        "id": "45bebc4964ae2798",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Send data to table",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nmsg.payload = msg.payload[1]\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1630,
+        "y": 640,
+        "wires": [
+            [
+                "b6a06dbe1d2e354a",
+                "241ee298f85928cf",
+                "05867ff258d76a8e"
+            ]
+        ]
+    },
+    {
+        "id": "e664efd1ff249d7d",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Find the max customerID",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nmsg.topic = \n    \"USE jordan_onlineshop_new; SELECT Customer_ID FROM jordan_onlineshop_new.Customer ORDER BY Customer_ID DESC LIMIT 1;\";\n    \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 680,
+        "wires": [
+            [
+                "03692e8eeb557b44"
+            ]
+        ]
+    },
+    {
+        "id": "59b402f0999de0f7",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Test error",
+        "func": "\nvar customerID = flow.get(\"checkCustomerID\")\nvar maxCustomerID = flow.get(\"maxCustomerID\")\nvar orderNumber = flow.get(\"checkOrderNumber\")\nvar maxorderNumber = flow.get(\"maxorderNumber\")\n\nif (customerID > maxCustomerID){\n    msg.topic = \"wrongID\"\n\n}\nelse if (orderNumber > maxorderNumber){\n    msg.topic = \"wrongordernumber\"\n}\n\nelse if (orderNumber == null) {\n    if (customerID == null) {\n        msg.topic = \"wronginput\"\n    }\n    else if (customerID == 0) {\n        msg.topic = \"wronginput\"\n\n    }\n    else{\n        msg.topic = \"True\"\n    }\n}\n\nelse if (orderNumber == 0) {\n    msg.topic = \"wronginput\"\n\n}\n\nelse if (customerID == 0) {\n    msg.topic = \"wronginput\"\n\n}\n\nelse{\n    msg.topic = \"True\"\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1000,
+        "y": 500,
+        "wires": [
+            [
+                "c2715f52f6eeb4f9"
+            ]
+        ]
+    },
+    {
+        "id": "9a0d4c7c9fd9f659",
+        "type": "change",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "maxCustomerID",
+                "pt": "flow",
+                "to": "payload[1][0].Customer_ID",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 750,
+        "y": 580,
+        "wires": [
+            [
+                "59b402f0999de0f7"
+            ]
+        ]
+    },
+    {
+        "id": "0294149e2b762d05",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Find the max orderNumber",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nmsg.topic = \n    \"USE jordan_onlineshop_new; SELECT Order_Number FROM jordan_onlineshop_new.Order ORDER BY Order_Number DESC LIMIT 1;\";\n    \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 560,
+        "wires": [
+            [
+                "333d9d5a20e71a6d"
+            ]
+        ]
+    },
+    {
+        "id": "9b1128db265caeea",
+        "type": "change",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "maxorderNumber",
+                "pt": "flow",
+                "to": "payload[1][0].Order_Number",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 730,
+        "y": 460,
+        "wires": [
+            [
+                "59b402f0999de0f7"
+            ]
+        ]
+    },
+    {
+        "id": "c2715f52f6eeb4f9",
+        "type": "switch",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "True",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "wrongID",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "wrongordernumber",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "wronginput",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 4,
+        "x": 910,
+        "y": 640,
+        "wires": [
+            [
+                "d8e56ccd13ac9303",
+                "9ea9696637a739cd"
+            ],
+            [
+                "2d69f17b9a340da6"
+            ],
+            [
+                "49f7432c9cc956f6"
+            ],
+            [
+                "0f9a3c9a15939cec"
+            ]
+        ]
+    },
+    {
+        "id": "9cb432dcc4778b8d",
+        "type": "ui_text",
+        "z": "dd347681f42c4e85",
+        "group": "a18e0ba38e35c5bc",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Message",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 1380,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "2d69f17b9a340da6",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Wrong ID message",
+        "func": "msg.payload = \"Wrong ID number\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1150,
+        "y": 720,
+        "wires": [
+            [
+                "9cb432dcc4778b8d"
+            ]
+        ]
+    },
+    {
+        "id": "49f7432c9cc956f6",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Wrong order message",
+        "func": "msg.payload = \"Wrong order number\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1160,
+        "y": 760,
+        "wires": [
+            [
+                "9cb432dcc4778b8d"
+            ]
+        ]
+    },
+    {
+        "id": "d8e56ccd13ac9303",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Success message",
+        "func": "msg.payload = \"Success\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1150,
+        "y": 680,
+        "wires": [
+            [
+                "9cb432dcc4778b8d"
+            ]
+        ]
+    },
+    {
+        "id": "510123569c1b0563",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 1410,
+        "y": 640,
+        "wires": [
+            [
+                "45bebc4964ae2798"
+            ]
+        ]
+    },
+    {
+        "id": "333d9d5a20e71a6d",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 710,
+        "y": 520,
+        "wires": [
+            [
+                "9b1128db265caeea"
+            ]
+        ]
+    },
+    {
+        "id": "e666b1a5c0172332",
+        "type": "ui_form",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "label": "Order checking - Employee",
+        "group": "2f3ee2ae7f579321",
+        "order": 1,
+        "width": 5,
+        "height": 1,
+        "options": [
+            {
+                "label": "EmployeeID",
+                "value": "EmployeeID",
+                "type": "number",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "EmployeeID": ""
+        },
+        "payload": "",
+        "submit": "submit",
+        "cancel": "cancel",
+        "topic": "topic",
+        "topicType": "msg",
+        "splitLayout": "",
+        "className": "",
+        "x": 140,
+        "y": 1020,
+        "wires": [
+            [
+                "8c6270b69985346b",
+                "f950a24f4c51fdc6"
+            ]
+        ]
+    },
+    {
+        "id": "82a1e5b11b23b261",
+        "type": "ui_table",
+        "z": "dd347681f42c4e85",
+        "group": "2f3ee2ae7f579321",
+        "name": "Not yet shipped",
+        "order": 11,
+        "width": 14,
+        "height": 10,
+        "columns": [
+            {
+                "field": "Contain_OrderNumber",
+                "title": "Order Number",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "Contain_Product1_Quantity",
+                "title": "Basketball",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "Contain_Product2_Quantity",
+                "title": "Football",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "Order_ShipStatus",
+                "title": "Shipment status",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "Order_PaymentStatus",
+                "title": "Payment Status",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            }
+        ],
+        "outputs": 0,
+        "cts": false,
+        "x": 900,
+        "y": 940,
+        "wires": []
+    },
+    {
+        "id": "963512f49f0f4986",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "INSERT Contain",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nvar quantity1Number = flow.get(\"quantity1\");\nvar quantity2Number = flow.get(\"quantity2\");\nvar customerID = flow.get(\"customerID\");\nvar orderNumber = flow.get(\"orderNumber\") + 1;\n\nif (quantity1Number == null){\n    quantity1Number = 0\n}\n\nif (quantity2Number == null) {\n    quantity2Number = 0\n}\n\nmsg.topic =\n    \"USE jordan_onlineshop_new; INSERT INTO jordan_onlineshop_new.Contain(Contain_OrderNumber, Contain_Product1_Quantity, Contain_Product2_Quantity) VALUE ('\" + orderNumber + \"','\" + quantity1Number + \"' , '\" + quantity2Number + \"');\";\n    \n\n\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1880,
+        "y": 240,
+        "wires": [
+            [
+                "c4122e1234e4b265"
+            ]
+        ]
+    },
+    {
+        "id": "c4122e1234e4b265",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 2110,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d5ceb42c2df146c1",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "INSERT payment",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nvar quantity1Number = flow.get(\"quantity1\");\nvar quantity2Number = flow.get(\"quantity2\");\nvar customerID = flow.get(\"customerID\");\nvar orderNumber = flow.get(\"orderNumber\") + 1;\nvar totalAmount = flow.get(\"TotalAmount\")\n\n    msg.topic =\n        \"USE jordan_onlineshop_new; INSERT INTO jordan_onlineshop_new.Payment(Payment_CustomerID, Payment_OrderNumber, Payment_Date, Payment_TotalAmount) VALUE ('\" + customerID + \"', '\" + orderNumber + \"','\" + date + \"' , '\" + totalAmount + \"');\";\n    \n\n\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 380,
+        "wires": [
+            [
+                "0a55a6733bfff378"
+            ]
+        ]
+    },
+    {
+        "id": "65995a01df82b9d7",
+        "type": "change",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "TotalAmount",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 2900,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0f9a3c9a15939cec",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Wrong input message",
+        "func": "msg.payload = \"Wrong input number\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1160,
+        "y": 800,
+        "wires": [
+            [
+                "9cb432dcc4778b8d"
+            ]
+        ]
+    },
+    {
+        "id": "4c289e3f5e9bd83a",
+        "type": "ui_dropdown",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "label": "Order Number",
+        "tooltip": "",
+        "place": "Select option",
+        "group": "2f3ee2ae7f579321",
+        "order": 5,
+        "width": 5,
+        "height": 1,
+        "passthru": true,
+        "multiple": false,
+        "options": [
+            {
+                "label": "",
+                "value": "",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "topic",
+        "topicType": "msg",
+        "className": "",
+        "x": 2140,
+        "y": 1140,
+        "wires": [
+            [
+                "789a18b305479f8d",
+                "daadb38b8420d009",
+                "1e3c91dc2275f225"
+            ]
+        ]
+    },
+    {
+        "id": "e1db0c452de822ed",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Read ready to ship order",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nmsg.topic = \n    \"USE jordan_onlineshop_new; SELECT DISTINCT Contain_OrderNumber,Contain_Product1_Quantity, Contain_Product2_Quantity, jordan_onlineshop_new.Order.Order_ShipStatus, jordan_onlineshop_new.Order.Order_PaymentStatus FROM jordan_onlineshop_new.Contain INNER JOIN jordan_onlineshop_new.Order ON jordan_onlineshop_new.Order.Order_Number = jordan_onlineshop_new.Contain.Contain_OrderNumber WHERE jordan_onlineshop_new.Order.Order_ShipStatus = 'N' and jordan_onlineshop_new.Order.Order_PaymentStatus = 'Y';\";\n    \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 1040,
+        "wires": [
+            [
+                "f4afa625f887f2d3"
+            ]
+        ]
+    },
+    {
+        "id": "1deee4422a0e1722",
+        "type": "ui_button",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "group": "da2899a2d8f6efd1",
+        "order": 13,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "label": "Ready and ship",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 120,
+        "y": 1220,
+        "wires": [
+            [
+                "32b7db8e34b7929f"
+            ]
+        ]
+    },
+    {
+        "id": "f4afa625f887f2d3",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 690,
+        "y": 1040,
+        "wires": [
+            [
+                "c43a3f21f396e8ef",
+                "1f9fb7e66c9e0a44"
+            ]
+        ]
+    },
+    {
+        "id": "e1da515304ddb346",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "display order number which payment paid",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nvar arr = []\nvar arrNumber = flow.get(\"arrNumber\")\n\nfor (let i = 0; i < arrNumber; i++){\n    arr.push(msg.payload[1][i].Contain_OrderNumber)\n}\n\nmsg.options = arr\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1840,
+        "y": 1140,
+        "wires": [
+            [
+                "4c289e3f5e9bd83a"
+            ]
+        ]
+    },
+    {
+        "id": "c43a3f21f396e8ef",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "obtain detail",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nmsg.payload = msg.payload[1]\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 890,
+        "y": 1080,
+        "wires": [
+            [
+                "7287f876155be891"
+            ]
+        ]
+    },
+    {
+        "id": "c442cac197458337",
+        "type": "change",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "arrNumber",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1270,
+        "y": 1020,
+        "wires": [
+            [
+                "2208e9b22eeae493"
+            ]
+        ]
+    },
+    {
+        "id": "2208e9b22eeae493",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Reload the payload",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nmsg.topic = \n    \"USE jordan_onlineshop_new; SELECT DISTINCT Contain_OrderNumber,Contain_Product1_Quantity, Contain_Product2_Quantity, jordan_onlineshop_new.Order.Order_ShipStatus, jordan_onlineshop_new.Order.Order_PaymentStatus FROM jordan_onlineshop_new.Contain INNER JOIN jordan_onlineshop_new.Order ON jordan_onlineshop_new.Order.Order_Number = jordan_onlineshop_new.Contain.Contain_OrderNumber WHERE jordan_onlineshop_new.Order.Order_ShipStatus = 'N' and jordan_onlineshop_new.Order.Order_PaymentStatus = 'Y';\";\n    \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1330,
+        "y": 1080,
+        "wires": [
+            [
+                "d3d3fd653ce90a70"
+            ]
+        ]
+    },
+    {
+        "id": "d3d3fd653ce90a70",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 1570,
+        "y": 1080,
+        "wires": [
+            [
+                "e1da515304ddb346"
+            ]
+        ]
+    },
+    {
+        "id": "789a18b305479f8d",
+        "type": "change",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "orderProcess",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 2420,
+        "y": 1200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1e3c91dc2275f225",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Find customerID",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nvar orderProcess = flow.get(\"orderProcess\")\n\nmsg.topic = \n    \"SELECT Order_CustomerID FROM jordan_onlineshop_new.Order WHERE Order_Number = \" + orderProcess + \" Order BY Order_CustomerID ASC LIMIT 1;\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2400,
+        "y": 1260,
+        "wires": [
+            [
+                "1382576228d69d18"
+            ]
+        ]
+    },
+    {
+        "id": "daadb38b8420d009",
+        "type": "ui_text",
+        "z": "dd347681f42c4e85",
+        "group": "da2899a2d8f6efd1",
+        "order": 1,
+        "width": 6,
+        "height": 1,
+        "name": "",
+        "label": "Order Number:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 3620,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "1382576228d69d18",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 2630,
+        "y": 1260,
+        "wires": [
+            [
+                "34179147ff62d89d",
+                "87a0da68e4c0f7a8",
+                "32838e909d4a397c",
+                "e21151cc2e20f589"
+            ]
+        ]
+    },
+    {
+        "id": "34179147ff62d89d",
+        "type": "ui_text",
+        "z": "dd347681f42c4e85",
+        "group": "da2899a2d8f6efd1",
+        "order": 2,
+        "width": 6,
+        "height": 1,
+        "name": "",
+        "label": "Customer ID:",
+        "format": "{{msg.payload[0].Order_CustomerID}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 3610,
+        "y": 1260,
+        "wires": []
+    },
+    {
+        "id": "87a0da68e4c0f7a8",
+        "type": "change",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "orderCustomerID",
+                "pt": "flow",
+                "to": "payload[0].Order_CustomerID",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 2910,
+        "y": 1200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "32838e909d4a397c",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Find customer detail",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nvar customerID = flow.get(\"orderCustomerID\")\n\nmsg.topic = \n    \"SELECT * FROM jordan_onlineshop_new.Customer WHERE Customer_ID = \"+ customerID +\";\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2900,
+        "y": 1320,
+        "wires": [
+            [
+                "fadd513323b57cc3"
+            ]
+        ]
+    },
+    {
+        "id": "fadd513323b57cc3",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 3150,
+        "y": 1320,
+        "wires": [
+            [
+                "7f0068be501953f5",
+                "6a8a2af3687b19d4",
+                "9783c72eda336a43",
+                "2f2d8429ac596801",
+                "c1cc30589614c045",
+                "14c9aec8d88e9e56",
+                "fb99d02abf66d0a2",
+                "c71edd2ca7ad7bd9"
+            ]
+        ]
+    },
+    {
+        "id": "7f0068be501953f5",
+        "type": "ui_text",
+        "z": "dd347681f42c4e85",
+        "group": "da2899a2d8f6efd1",
+        "order": 3,
+        "width": 6,
+        "height": 1,
+        "name": "Customer Name",
+        "label": "Customer Name:",
+        "format": "{{msg.payload[0].Customer_Name}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 3600,
+        "y": 1340,
+        "wires": []
+    },
+    {
+        "id": "6a8a2af3687b19d4",
+        "type": "ui_text",
+        "z": "dd347681f42c4e85",
+        "group": "da2899a2d8f6efd1",
+        "order": 4,
+        "width": 6,
+        "height": 1,
+        "name": "Customer Address 1",
+        "label": "Customer Address 1:",
+        "format": "{{msg.payload[0].Customer_Address1}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 3620,
+        "y": 1380,
+        "wires": []
+    },
+    {
+        "id": "9783c72eda336a43",
+        "type": "ui_text",
+        "z": "dd347681f42c4e85",
+        "group": "da2899a2d8f6efd1",
+        "order": 6,
+        "width": 6,
+        "height": 1,
+        "name": "Customer State",
+        "label": "Customer State:",
+        "format": "{{msg.payload[0].Customer_State}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 3600,
+        "y": 1460,
+        "wires": []
+    },
+    {
+        "id": "2f2d8429ac596801",
+        "type": "ui_text",
+        "z": "dd347681f42c4e85",
+        "group": "da2899a2d8f6efd1",
+        "order": 5,
+        "width": 6,
+        "height": 1,
+        "name": "Customer City",
+        "label": "Customer City:",
+        "format": "{{msg.payload[0].Customer_City}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 3600,
+        "y": 1420,
+        "wires": []
+    },
+    {
+        "id": "c1cc30589614c045",
+        "type": "ui_text",
+        "z": "dd347681f42c4e85",
+        "group": "da2899a2d8f6efd1",
+        "order": 7,
+        "width": 6,
+        "height": 1,
+        "name": "Customer Postcode",
+        "label": "Customer Postcode:",
+        "format": "{{msg.payload[0].Customer_Postcode}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 3620,
+        "y": 1500,
+        "wires": []
+    },
+    {
+        "id": "14c9aec8d88e9e56",
+        "type": "ui_text",
+        "z": "dd347681f42c4e85",
+        "group": "da2899a2d8f6efd1",
+        "order": 8,
+        "width": 6,
+        "height": 1,
+        "name": "Customer Country",
+        "label": "Customer Country:",
+        "format": "{{msg.payload[0].Customer_Country}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 3610,
+        "y": 1540,
+        "wires": []
+    },
+    {
+        "id": "fb99d02abf66d0a2",
+        "type": "ui_text",
+        "z": "dd347681f42c4e85",
+        "group": "da2899a2d8f6efd1",
+        "order": 9,
+        "width": 6,
+        "height": 1,
+        "name": "Customer Phone Number",
+        "label": "Customer Phone Number:",
+        "format": "{{msg.payload[0].Customer_PhoneNumber}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 3630,
+        "y": 1580,
+        "wires": []
+    },
+    {
+        "id": "c71edd2ca7ad7bd9",
+        "type": "ui_text",
+        "z": "dd347681f42c4e85",
+        "group": "da2899a2d8f6efd1",
+        "order": 10,
+        "width": 6,
+        "height": 1,
+        "name": "Customer Email",
+        "label": "Customer Email:",
+        "format": "{{msg.payload[0].Customer_Email}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 3600,
+        "y": 1620,
+        "wires": []
+    },
+    {
+        "id": "e21151cc2e20f589",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Find order detail",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nvar orderNumber = flow.get(\"orderProcess\")\n\nmsg.topic = \n    \"SELECT * FROM jordan_onlineshop_new.Contain WHERE contain_OrderNumber = \"+ orderNumber +\";\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2880,
+        "y": 1400,
+        "wires": [
+            [
+                "4fe6d6d335162d15"
+            ]
+        ]
+    },
+    {
+        "id": "4fe6d6d335162d15",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 3130,
+        "y": 1400,
+        "wires": [
+            [
+                "17ed03114f475d3c",
+                "58bcf0e6c04e640a"
+            ]
+        ]
+    },
+    {
+        "id": "17ed03114f475d3c",
+        "type": "ui_text",
+        "z": "dd347681f42c4e85",
+        "group": "da2899a2d8f6efd1",
+        "order": 11,
+        "width": 6,
+        "height": 1,
+        "name": "Product 1 quantity",
+        "label": "Product 1 quantity:",
+        "format": "{{msg.payload[0].Contain_Product1_Quantity}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 3610,
+        "y": 1720,
+        "wires": []
+    },
+    {
+        "id": "58bcf0e6c04e640a",
+        "type": "ui_text",
+        "z": "dd347681f42c4e85",
+        "group": "da2899a2d8f6efd1",
+        "order": 12,
+        "width": 6,
+        "height": 1,
+        "name": "Product 2 quantity",
+        "label": "Product 2 quantity:",
+        "format": "{{msg.payload[0].Contain_Product2_Quantity}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 3610,
+        "y": 1760,
+        "wires": []
+    },
+    {
+        "id": "8c6270b69985346b",
+        "type": "change",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "EmployeeID",
+                "pt": "flow",
+                "to": "payload[\"EmployeeID\"]",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 420,
+        "y": 900,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1f9fb7e66c9e0a44",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "display order detail",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nmsg.payload = msg.payload[1]\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 1020,
+        "wires": [
+            [
+                "82a1e5b11b23b261"
+            ]
+        ]
+    },
+    {
+        "id": "3c2368db38734b57",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "UPDATE DATA",
+        "func": "var orderNumber = flow.get(\"orderProcess\");\nvar shipmentID = flow.get(\"maxShipmentID\")\n\nmsg.topic = \n\"USE jordan_onlineshop_new; UPDATE jordan_onlineshop_new.Order SET Order_ShipStatus = 'Y' WHERE jordan_onlineshop_new.Order.Order_Number = \" + orderNumber +\"\";\n//mas.payload = [new Date()];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 1400,
+        "wires": [
+            [
+                "0b57835aee98e0ba"
+            ]
+        ]
+    },
+    {
+        "id": "c64baa267fa6ce60",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "INSERT table",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nvar orderNumber = flow.get(\"orderProcess\");\nvar shipmentID = flow.get(\"maxShipmentID\") + 1;\nvar handleID = flow.get(\"EmployeeID\");\n\nmsg.topic =\n    \"USE jordan_onlineshop_new; INSERT INTO jordan_onlineshop_new.Shipment(Shipment_Number, Shipment_date, Handle_By_ID, Shipment_OrderNumber) VALUE ('\" + shipmentID + \"', '\" + date + \"','\" + handleID + \"' , '\" + orderNumber + \"');\";\n    \n\n\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 1340,
+        "wires": [
+            [
+                "0b57835aee98e0ba"
+            ]
+        ]
+    },
+    {
+        "id": "32b7db8e34b7929f",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Find the max orderSSD",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nmsg.topic = \n    \"USE jordan_onlineshop_new; SELECT Shipment_Number FROM jordan_onlineshop_new.Shipment ORDER BY Shipment_Number DESC LIMIT 1;\";\n    \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 1220,
+        "wires": [
+            [
+                "ad01b986cad19091"
+            ]
+        ]
+    },
+    {
+        "id": "d643fa06310d88fe",
+        "type": "change",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "maxShipmentID",
+                "pt": "flow",
+                "to": "payload[1][0].Shipment_Number",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 290,
+        "y": 1340,
+        "wires": [
+            [
+                "c64baa267fa6ce60",
+                "3c2368db38734b57"
+            ]
+        ]
+    },
+    {
+        "id": "ad01b986cad19091",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 610,
+        "y": 1220,
+        "wires": [
+            [
+                "d643fa06310d88fe"
+            ]
+        ]
+    },
+    {
+        "id": "0b57835aee98e0ba",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 930,
+        "y": 1340,
+        "wires": [
+            [
+                "d5ca25836caf793a",
+                "e1db0c452de822ed",
+                "7d668fcf3d0ae284",
+                "b41977d98d3ee8fa"
+            ]
+        ]
+    },
+    {
+        "id": "d5ca25836caf793a",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Empty detail",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\n\n\nmsg.payload =  \"\"\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2850,
+        "y": 1920,
+        "wires": [
+            [
+                "7f0068be501953f5",
+                "6a8a2af3687b19d4",
+                "2f2d8429ac596801",
+                "c1cc30589614c045",
+                "14c9aec8d88e9e56",
+                "fb99d02abf66d0a2",
+                "c71edd2ca7ad7bd9",
+                "9783c72eda336a43",
+                "58bcf0e6c04e640a",
+                "17ed03114f475d3c",
+                "34179147ff62d89d",
+                "daadb38b8420d009"
+            ]
+        ]
+    },
+    {
+        "id": "c652aca188cccbef",
+        "type": "ui_text",
+        "z": "dd347681f42c4e85",
+        "group": "2f3ee2ae7f579321",
+        "order": 2,
+        "width": 5,
+        "height": 1,
+        "name": "",
+        "label": "Employee ID:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 1270,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "b41977d98d3ee8fa",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "UPDATE DATA",
+        "func": "var orderNumber = flow.get(\"orderProcess\");\nvar shipmentID = flow.get(\"maxShipmentID\") + 1;\n\nmsg.topic = \n\"USE jordan_onlineshop_new; UPDATE jordan_onlineshop_new.Order SET Order_ShipmentID = '\" + shipmentID +\"' WHERE jordan_onlineshop_new.Order.Order_Number = \" + orderNumber +\"\";\n//mas.payload = [new Date()];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1220,
+        "y": 1260,
+        "wires": [
+            [
+                "2064051f882f0bd1"
+            ]
+        ]
+    },
+    {
+        "id": "241ee298f85928cf",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Payment check",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nif (Object.keys(msg.payload).length == 0){\n    msg.topic = \"wrongOrderNumber\"\n}\n\nelse{\n    msg.topic = msg.payload[0].Order_PaymentStatus\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1620,
+        "y": 720,
+        "wires": [
+            [
+                "3c22f55f2e594f04"
+            ]
+        ]
+    },
+    {
+        "id": "3c22f55f2e594f04",
+        "type": "switch",
+        "z": "dd347681f42c4e85",
+        "name": "Check Paid or not",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "N",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Y",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "wrongOrderNumber",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 1850,
+        "y": 780,
+        "wires": [
+            [
+                "60ec802d9990f6e9",
+                "32100446741c2b91"
+            ],
+            [
+                "3b0d9108151f12bf"
+            ],
+            [
+                "19d90c9f7e90271c"
+            ]
+        ]
+    },
+    {
+        "id": "60ec802d9990f6e9",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Read data from MYSQL",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nvar orderNumber = flow.get(\"checkOrderNumber\");\n\n    msg.topic =\n        \"USE jordan_onlineshop_new; SELECT jordan_onlineshop_new.Order.Order_Number, jordan_onlineshop_new.Order.Order_CustomerID, jordan_onlineshop_new.Order.Order_Quantity, jordan_onlineshop_new.Product.Product_Name, jordan_onlineshop_new.Product.Product_Price, jordan_onlineshop_new.Product.Product_Price * jordan_onlineshop_new.Order.Order_Quantity AS TotalPrice FROM jordan_onlineshop_new.Order JOIN jordan_onlineshop_new.Product ON jordan_onlineshop_new.Order.Order_ProductID = jordan_onlineshop_new.Product.Product_ID WHERE Order_Number = '\" + orderNumber + \"' ;\";\n\n\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2090,
+        "y": 720,
+        "wires": [
+            [
+                "c81b55bbc15cbf16"
+            ]
+        ]
+    },
+    {
+        "id": "c81b55bbc15cbf16",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 2330,
+        "y": 720,
+        "wires": [
+            [
+                "1a093bb9f5f412b4",
+                "6cfaf15877f21010",
+                "569c05717ddb5aac"
+            ]
+        ]
+    },
+    {
+        "id": "969c59d1babba937",
+        "type": "ui_text",
+        "z": "dd347681f42c4e85",
+        "group": "eaba5ebd28965f80",
+        "order": 2,
+        "width": 4,
+        "height": 1,
+        "name": "",
+        "label": "Order Number:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 2840,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "b3f56926e58e4f81",
+        "type": "ui_text",
+        "z": "dd347681f42c4e85",
+        "group": "eaba5ebd28965f80",
+        "order": 1,
+        "width": 4,
+        "height": 1,
+        "name": "",
+        "label": "Customer ID:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 2830,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "10373aafc5e6b9b0",
+        "type": "ui_table",
+        "z": "dd347681f42c4e85",
+        "group": "eaba5ebd28965f80",
+        "name": "Customer Payment",
+        "order": 4,
+        "width": 10,
+        "height": 5,
+        "columns": [
+            {
+                "field": "Product_Name",
+                "title": "Product Name",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "Order_Quantity",
+                "title": "Quantity",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "Product_Price",
+                "title": "Unit Price",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "TotalPrice",
+                "title": "Total Price",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            }
+        ],
+        "outputs": 0,
+        "cts": false,
+        "x": 2850,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "08e5e4e831224cac",
+        "type": "ui_text",
+        "z": "dd347681f42c4e85",
+        "group": "eaba5ebd28965f80",
+        "order": 7,
+        "width": 4,
+        "height": 1,
+        "name": "",
+        "label": "Total Price:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 2830,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "bd953d4c0ba271ad",
+        "type": "change",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "TotalAmountCheck",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 2880,
+        "y": 780,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "569c05717ddb5aac",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "display order detail",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nmsg.payload = msg.payload[1]\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2570,
+        "y": 720,
+        "wires": [
+            [
+                "10373aafc5e6b9b0",
+                "3f0b944af68f3a17"
+            ]
+        ]
+    },
+    {
+        "id": "6cfaf15877f21010",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "display customer ID",
+        "func": "msg.payload = msg.payload[1][0].Order_CustomerID\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2580,
+        "y": 660,
+        "wires": [
+            [
+                "b3f56926e58e4f81",
+                "2fb35631a4cfe1a3"
+            ]
+        ]
+    },
+    {
+        "id": "1a093bb9f5f412b4",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "display order number",
+        "func": "msg.payload = msg.payload[1][0].Order_Number\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2580,
+        "y": 560,
+        "wires": [
+            [
+                "969c59d1babba937"
+            ]
+        ]
+    },
+    {
+        "id": "3f0b944af68f3a17",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "display total payment",
+        "func": "var arrNumber = Object.keys(msg.payload).length\nvar price1 = 0\nvar price2 = 0\n\nif (arrNumber == 1) {\n    price1 = msg.payload[0].TotalPrice\n}\n\nif (arrNumber == 2) {\n    price1 = msg.payload[0].TotalPrice\n    price2 = msg.payload[1].TotalPrice\n}\n\nmsg.payload = price1 + price2\nreturn msg;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2520,
+        "y": 800,
+        "wires": [
+            [
+                "bd953d4c0ba271ad",
+                "08e5e4e831224cac"
+            ]
+        ]
+    },
+    {
+        "id": "0607bc620cd9e8ec",
+        "type": "ui_button",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "group": "eaba5ebd28965f80",
+        "order": 8,
+        "width": 4,
+        "height": 1,
+        "passthru": false,
+        "label": "Payment Confirm",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 3150,
+        "y": 760,
+        "wires": [
+            [
+                "a9762e1dc66a931d"
+            ]
+        ]
+    },
+    {
+        "id": "cb48c9ac9af6d8a4",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "UPDATE payment status",
+        "func": "var orderNumber = flow.get(\"checkOrderNumber\");\n\nmsg.topic = \n\"USE jordan_onlineshop_new; UPDATE jordan_onlineshop_new.Order SET Order_PaymentStatus = 'Y' WHERE jordan_onlineshop_new.Order.Order_Number = \" + orderNumber +\"\";\n//mas.payload = [new Date()];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 3630,
+        "y": 820,
+        "wires": [
+            [
+                "eeed40ee93c1eb6b"
+            ]
+        ]
+    },
+    {
+        "id": "eeed40ee93c1eb6b",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 4010,
+        "y": 840,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "811680921f3141d1",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Payment success message",
+        "func": "msg.payload = \"Payment success\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 3640,
+        "y": 940,
+        "wires": [
+            [
+                "1ed2444a8a6413e9"
+            ]
+        ]
+    },
+    {
+        "id": "1ed2444a8a6413e9",
+        "type": "ui_text",
+        "z": "dd347681f42c4e85",
+        "group": "eaba5ebd28965f80",
+        "order": 9,
+        "width": 4,
+        "height": 1,
+        "name": "Message",
+        "label": "",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "x": 3980,
+        "y": 1080,
+        "wires": []
+    },
+    {
+        "id": "4ec11d1c0a975718",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "INSERT payment",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nvar quantity1Number = flow.get(\"quantity1\");\nvar quantity2Number = flow.get(\"quantity2\");\nvar customerID = flow.get(\"CheckPaidCustomerID\");\nvar orderNumber = flow.get(\"checkOrderNumber\");\nvar totalAmount = flow.get(\"TotalAmountCheck\")\n\n    msg.topic =\n        \"USE jordan_onlineshop_new; INSERT INTO jordan_onlineshop_new.Payment(Payment_CustomerID, Payment_OrderNumber, Payment_Date, Payment_TotalAmount) VALUE ('\" + customerID + \"', '\" + orderNumber + \"','\" + date + \"' , '\" + totalAmount + \"');\";\n    \n\n\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 3610,
+        "y": 860,
+        "wires": [
+            [
+                "eeed40ee93c1eb6b"
+            ]
+        ]
+    },
+    {
+        "id": "3b0d9108151f12bf",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "empty table if paid",
+        "func": "msg.payload = \"\"\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2510,
+        "y": 960,
+        "wires": [
+            [
+                "969c59d1babba937",
+                "b3f56926e58e4f81",
+                "10373aafc5e6b9b0",
+                "08e5e4e831224cac",
+                "1ed2444a8a6413e9"
+            ]
+        ]
+    },
+    {
+        "id": "f950a24f4c51fdc6",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Find the max EmployeeID",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nmsg.topic = \n    \"USE jordan_onlineshop_new; SELECT Employee_ID FROM jordan_onlineshop_new.Employee ORDER BY Employee_ID DESC LIMIT 1;\";\n    \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 820,
+        "wires": [
+            [
+                "b90a71a6a23fe114"
+            ]
+        ]
+    },
+    {
+        "id": "b90a71a6a23fe114",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 670,
+        "y": 820,
+        "wires": [
+            [
+                "d889a6aca14f8213"
+            ]
+        ]
+    },
+    {
+        "id": "d889a6aca14f8213",
+        "type": "change",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "maxEmployeeID",
+                "pt": "flow",
+                "to": "payload[1][0].Employee_ID",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 850,
+        "y": 720,
+        "wires": [
+            [
+                "a6471910bf40cf48"
+            ]
+        ]
+    },
+    {
+        "id": "a6471910bf40cf48",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Test error",
+        "func": "\nvar employeeID = flow.get(\"EmployeeID\");\nvar maxEmployeeID = flow.get(\"maxEmployeeID\");\n\nif (maxEmployeeID < employeeID){\n    msg.topic = \"wrongID\"\n}\n\nelse if (employeeID == 0){\n    msg.topic = \"wrongID\"\n}\n\nelse{\n    msg.topic = \"True\"\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 900,
+        "y": 840,
+        "wires": [
+            [
+                "be7974697a1045c8"
+            ]
+        ]
+    },
+    {
+        "id": "be7974697a1045c8",
+        "type": "switch",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "True",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "wrongID",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 670,
+        "y": 920,
+        "wires": [
+            [
+                "e1db0c452de822ed",
+                "9903828c4929a4aa",
+                "4dec561382fbb60f"
+            ],
+            [
+                "91b3e20c8e40c3e6"
+            ]
+        ]
+    },
+    {
+        "id": "91b3e20c8e40c3e6",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Wrong ID message",
+        "func": "msg.payload = \"Wrong ID number\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 930,
+        "y": 900,
+        "wires": [
+            [
+                "5dba3326106eb25c",
+                "3d6c3cbb13e80f79"
+            ]
+        ]
+    },
+    {
+        "id": "5dba3326106eb25c",
+        "type": "ui_text",
+        "z": "dd347681f42c4e85",
+        "group": "2f3ee2ae7f579321",
+        "order": 9,
+        "width": 5,
+        "height": 1,
+        "name": "",
+        "label": "Message",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 1280,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "9903828c4929a4aa",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Success message",
+        "func": "msg.payload = \"Success\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1110,
+        "y": 860,
+        "wires": [
+            [
+                "5dba3326106eb25c"
+            ]
+        ]
+    },
+    {
+        "id": "4dec561382fbb60f",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "display Employee ID",
+        "func": "msg.payload = flow.get(\"EmployeeID\")\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1080,
+        "y": 980,
+        "wires": [
+            [
+                "c652aca188cccbef"
+            ]
+        ]
+    },
+    {
+        "id": "3d6c3cbb13e80f79",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Empty detail",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\n\n\nmsg.payload =  \"\"\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1110,
+        "y": 940,
+        "wires": [
+            [
+                "c652aca188cccbef"
+            ]
+        ]
+    },
+    {
+        "id": "2fb35631a4cfe1a3",
+        "type": "change",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "CheckPaidCustomerID",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 2890,
+        "y": 620,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "da18b324513223dc",
+        "type": "ui_form",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "label": "Order checking - Customer ID",
+        "group": "a18e0ba38e35c5bc",
+        "order": 1,
+        "width": 6,
+        "height": 1,
+        "options": [
+            {
+                "label": "CustomerID",
+                "value": "CustomerID",
+                "type": "number",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "CustomerID": ""
+        },
+        "payload": "",
+        "submit": "submit",
+        "cancel": "cancel",
+        "topic": "topic",
+        "topicType": "msg",
+        "splitLayout": "",
+        "className": "",
+        "x": 130,
+        "y": 680,
+        "wires": [
+            [
+                "3eef9e1c1bb8e81a",
+                "e664efd1ff249d7d",
+                "26f3c4104a0a7e74"
+            ]
+        ]
+    },
+    {
+        "id": "b4199773065a3d88",
+        "type": "change",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "checkCustomerID",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e811c86aa9840604",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "reset customerID",
+        "func": "msg.payload = null\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 190,
+        "y": 620,
+        "wires": [
+            [
+                "b4199773065a3d88"
+            ]
+        ]
+    },
+    {
+        "id": "26f3c4104a0a7e74",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "reset Order Number",
+        "func": "msg.payload = null\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 740,
+        "wires": [
+            [
+                "aaa01d307f7cd5ab"
+            ]
+        ]
+    },
+    {
+        "id": "aaa01d307f7cd5ab",
+        "type": "change",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "checkOrderNumber",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 480,
+        "y": 740,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "53fd24d6e74a854e",
+        "type": "ui_button",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "group": "eaba5ebd28965f80",
+        "order": 8,
+        "width": 4,
+        "height": 1,
+        "passthru": false,
+        "label": "Order Delete",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 3130,
+        "y": 440,
+        "wires": [
+            [
+                "72a5b5d53e19d496"
+            ]
+        ]
+    },
+    {
+        "id": "11b58b165cab9332",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Delete success message",
+        "func": "msg.payload = \"Delete success\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 3690,
+        "y": 660,
+        "wires": [
+            [
+                "1ed2444a8a6413e9"
+            ]
+        ]
+    },
+    {
+        "id": "0456e15fcf33b0e9",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Delete Contain",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nvar quantity1Number = flow.get(\"quantity1\");\nvar quantity2Number = flow.get(\"quantity2\");\nvar customerID = flow.get(\"CheckPaidCustomerID\");\nvar orderNumber = flow.get(\"checkOrderNumber\");\nvar totalAmount = flow.get(\"TotalAmountCheck\")\n\n    msg.topic =\n        \"USE jordan_onlineshop_new; DELETE FROM Contain WHERE Contain_OrderNumber = '\"+ orderNumber +\"';\";\n    \n\n\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 3520,
+        "y": 540,
+        "wires": [
+            [
+                "98049bdfdfce09c0"
+            ]
+        ]
+    },
+    {
+        "id": "98049bdfdfce09c0",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 3730,
+        "y": 540,
+        "wires": [
+            [
+                "1809ab403c8cc695"
+            ]
+        ]
+    },
+    {
+        "id": "1809ab403c8cc695",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Delete Order",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nvar quantity1Number = flow.get(\"quantity1\");\nvar quantity2Number = flow.get(\"quantity2\");\nvar customerID = flow.get(\"CheckPaidCustomerID\");\nvar orderNumber = flow.get(\"checkOrderNumber\");\nvar totalAmount = flow.get(\"TotalAmountCheck\")\n\n    msg.topic =\n        \"USE jordan_onlineshop_new; DELETE FROM jordan_onlineshop_new.Order WHERE jordan_onlineshop_new.Order.Order_Number = '\"+ orderNumber +\"';\";\n    \n\n\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 3510,
+        "y": 600,
+        "wires": [
+            [
+                "083dc2591b187275"
+            ]
+        ]
+    },
+    {
+        "id": "083dc2591b187275",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 3730,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ddaeac7b89cdcf5d",
+        "type": "switch",
+        "z": "dd347681f42c4e85",
+        "name": "Check Paid or not",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "N",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Y",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 3210,
+        "y": 580,
+        "wires": [
+            [
+                "0456e15fcf33b0e9",
+                "11b58b165cab9332"
+            ],
+            [
+                "9977257b843b0254"
+            ]
+        ]
+    },
+    {
+        "id": "72a5b5d53e19d496",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Read data from MYSQL",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nvar orderNumber = flow.get(\"checkOrderNumber\");\nvar customerID = flow.get(\"checkCustomerID\");\n\nif (orderNumber != null){\n    if (customerID != null) {\n        msg.topic =\n            \"USE jordan_onlineshop_new_new; SELECT jordan_onlineshop_new.Order.Order_ShipmentID, jordan_onlineshop_new.Order.Order_Date, jordan_onlineshop_new.Order.Order_Quantity, jordan_onlineshop_new.Product.Product_Name, jordan_onlineshop_new.Product.Product_Price, jordan_onlineshop_new.Product.Product_Price * jordan_onlineshop_new.Order.Order_Quantity AS TotalPrice, jordan_onlineshop_new.Order.Order_PaymentStatus, jordan_onlineshop_new.Order.Order_ShipStatus FROM jordan_onlineshop_new.Order JOIN jordan_onlineshop_new.Product ON jordan_onlineshop_new.Order.Order_ProductID = jordan_onlineshop_new.Product.Product_ID WHERE Order_Number = '\" + orderNumber + \"' and Order_CustomerID = '\" + customerID + \"';\";\n    }\n    else {\n        msg.topic =\n            \"USE jordan_onlineshop_new; SELECT jordan_onlineshop_new.Order.Order_ShipmentID, jordan_onlineshop_new.Order.Order_Date, jordan_onlineshop_new.Order.Order_Quantity, jordan_onlineshop_new.Product.Product_Name, jordan_onlineshop_new.Product.Product_Price, jordan_onlineshop_new.Product.Product_Price * jordan_onlineshop_new.Order.Order_Quantity AS TotalPrice, jordan_onlineshop_new.Order.Order_PaymentStatus, jordan_onlineshop_new.Order.Order_ShipStatus FROM jordan_onlineshop_new.Order JOIN jordan_onlineshop_new.Product ON jordan_onlineshop_new.Order.Order_ProductID = jordan_onlineshop_new.Product.Product_ID WHERE Order_Number = '\" + orderNumber + \"' ;\";\n\n    }\n\n}\n\nelse if (customerID != null) {\n\n            msg.topic =\n                \"USE jordan_onlineshop_new; SELECT jordan_onlineshop_new.Order.Order_ShipmentID, jordan_onlineshop_new.Order.Order_Date, jordan_onlineshop_new.Order.Order_Quantity, jordan_onlineshop_new.Product.Product_Name, jordan_onlineshop_new.Product.Product_Price, jordan_onlineshop_new.Product.Product_Price * jordan_onlineshop_new.Order.Order_Quantity AS TotalPrice, jordan_onlineshop_new.Order.Order_PaymentStatus, jordan_onlineshop_new.Order.Order_ShipStatus FROM jordan_onlineshop_new.Order JOIN jordan_onlineshop_new.Product ON jordan_onlineshop_new.Order.Order_ProductID = jordan_onlineshop_new.Product.Product_ID WHERE Order_CustomerID = '\" + customerID + \"';\";\n\n        }\n\n\n\nelse{\n    msg.topic =\n     \"USE jordan_onlineshop_new; SELECT jordan_onlineshop_new.Order.Order_ShipmentID, jordan_onlineshop_new.Order.Order_Date, jordan_onlineshop_new.Order.Order_Quantity, jordan_onlineshop_new.Product.Product_Name, jordan_onlineshop_new.Product.Product_Price, jordan_onlineshop_new.Product.Product_Price * jordan_onlineshop_new.Order.Order_Quantity AS TotalPrice, jordan_onlineshop_new.Order.Order_PaymentStatus, jordan_onlineshop_new.Order.Order_ShipStatus FROM jordan_onlineshop_new.Order JOIN jordan_onlineshop_new.Product ON jordan_onlineshop_new.Order.Order_ProductID = jordan_onlineshop_new.Product.Product_ID WHERE Order_Number = '\" + orderNumber + \"' ;\";\n\n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 3350,
+        "y": 440,
+        "wires": [
+            [
+                "b72837f7ee3131dd"
+            ]
+        ]
+    },
+    {
+        "id": "b72837f7ee3131dd",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 3590,
+        "y": 440,
+        "wires": [
+            [
+                "f43eea5e0b390468"
+            ]
+        ]
+    },
+    {
+        "id": "f43eea5e0b390468",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Payment check",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nmsg.topic = msg.payload[1][0].Order_PaymentStatus\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 3200,
+        "y": 520,
+        "wires": [
+            [
+                "ddaeac7b89cdcf5d"
+            ]
+        ]
+    },
+    {
+        "id": "9977257b843b0254",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Delete fail message",
+        "func": "msg.payload = \"Can't delete due payment done\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 3670,
+        "y": 700,
+        "wires": [
+            [
+                "1ed2444a8a6413e9"
+            ]
+        ]
+    },
+    {
+        "id": "a9762e1dc66a931d",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Read data from MYSQL",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nvar orderNumber = flow.get(\"checkOrderNumber\");\nvar customerID = flow.get(\"checkCustomerID\");\n\nif (orderNumber != null){\n    if (customerID != null) {\n        msg.topic =\n            \"USE jordan_onlineshop_new; SELECT jordan_onlineshop_new.Order.Order_ShipmentID, jordan_onlineshop_new.Order.Order_Date, jordan_onlineshop_new.Order.Order_Quantity, jordan_onlineshop_new.Product.Product_Name, jordan_onlineshop_new.Product.Product_Price, jordan_onlineshop_new.Product.Product_Price * jordan_onlineshop_new.Order.Order_Quantity AS TotalPrice, jordan_onlineshop_new.Order.Order_PaymentStatus, jordan_onlineshop_new.Order.Order_ShipStatus FROM jordan_onlineshop_new.Order JOIN jordan_onlineshop_new.Product ON jordan_onlineshop_new.Order.Order_ProductID = jordan_onlineshop_new.Product.Product_ID WHERE Order_Number = '\" + orderNumber + \"' and Order_CustomerID = '\" + customerID + \"';\";\n    }\n    else {\n        msg.topic =\n            \"USE jordan_onlineshop_new; SELECT jordan_onlineshop_new.Order.Order_ShipmentID, jordan_onlineshop_new.Order.Order_Date, jordan_onlineshop_new.Order.Order_Quantity, jordan_onlineshop_new.Product.Product_Name, jordan_onlineshop_new.Product.Product_Price, jordan_onlineshop_new.Product.Product_Price * jordan_onlineshop_new.Order.Order_Quantity AS TotalPrice, jordan_onlineshop_new.Order.Order_PaymentStatus, jordan_onlineshop_new.Order.Order_ShipStatus FROM jordan_onlineshop_new.Order JOIN jordan_onlineshop_new.Product ON jordan_onlineshop_new.Order.Order_ProductID = jordan_onlineshop_new.Product.Product_ID WHERE Order_Number = '\" + orderNumber + \"' ;\";\n\n    }\n\n}\n\nelse if (customerID != null) {\n\n            msg.topic =\n                \"USE jordan_onlineshop_new; SELECT jordan_onlineshop_new.Order.Order_ShipmentID, jordan_onlineshop_new.Order.Order_Date, jordan_onlineshop_new.Order.Order_Quantity, jordan_onlineshop_new.Product.Product_Name, jordan_onlineshop_new.Product.Product_Price, jordan_onlineshop_new.Product.Product_Price * jordan_onlineshop_new.Order.Order_Quantity AS TotalPrice, jordan_onlineshop_new.Order.Order_PaymentStatus, jordan_onlineshop_new.Order.Order_ShipStatus FROM jordan_onlineshop_new.Order JOIN jordan_onlineshop_new.Product ON jordan_onlineshop_new.Order.Order_ProductID = jordan_onlineshop_new.Product.Product_ID WHERE Order_CustomerID = '\" + customerID + \"';\";\n\n        }\n\n\n\nelse{\n    msg.topic =\n     \"USE jordan_onlineshop_new; SELECT jordan_onlineshop_new.Order.Order_ShipmentID, jordan_onlineshop_new.Order.Order_Date, jordan_onlineshop_new.Order.Order_Quantity, jordan_onlineshop_new.Product.Product_Name, jordan_onlineshop_new.Product.Product_Price, jordan_onlineshop_new.Product.Product_Price * jordan_onlineshop_new.Order.Order_Quantity AS TotalPrice, jordan_onlineshop_new.Order.Order_PaymentStatus, jordan_onlineshop_new.Order.Order_ShipStatus FROM jordan_onlineshop_new.Order JOIN jordan_onlineshop_new.Product ON jordan_onlineshop_new.Order.Order_ProductID = jordan_onlineshop_new.Product.Product_ID WHERE Order_Number = '\" + orderNumber + \"' ;\";\n\n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 3370,
+        "y": 760,
+        "wires": [
+            [
+                "1cbb91025a683b66"
+            ]
+        ]
+    },
+    {
+        "id": "1cbb91025a683b66",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 3630,
+        "y": 760,
+        "wires": [
+            [
+                "68306cdfe2967df7"
+            ]
+        ]
+    },
+    {
+        "id": "68306cdfe2967df7",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Payment check",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nmsg.topic = msg.payload[1][0].Order_PaymentStatus\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 3340,
+        "y": 820,
+        "wires": [
+            [
+                "4cd38be9f8288970"
+            ]
+        ]
+    },
+    {
+        "id": "4cd38be9f8288970",
+        "type": "switch",
+        "z": "dd347681f42c4e85",
+        "name": "Check Paid or not",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "N",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Y",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 3350,
+        "y": 880,
+        "wires": [
+            [
+                "cb48c9ac9af6d8a4",
+                "4ec11d1c0a975718",
+                "811680921f3141d1"
+            ],
+            [
+                "032b2cd0a1606709"
+            ]
+        ]
+    },
+    {
+        "id": "032b2cd0a1606709",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Delete success message",
+        "func": "msg.payload = \"Payment done already\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 3630,
+        "y": 980,
+        "wires": [
+            [
+                "1ed2444a8a6413e9"
+            ]
+        ]
+    },
+    {
+        "id": "32100446741c2b91",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "empty table",
+        "func": "msg.payload = \"\"\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2490,
+        "y": 920,
+        "wires": [
+            [
+                "1ed2444a8a6413e9"
+            ]
+        ]
+    },
+    {
+        "id": "05867ff258d76a8e",
+        "type": "debug",
+        "z": "dd347681f42c4e85",
+        "name": "debug 7",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1820,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "7d668fcf3d0ae284",
+        "type": "debug",
+        "z": "dd347681f42c4e85",
+        "name": "debug 8",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
+        "y": 1460,
+        "wires": []
+    },
+    {
+        "id": "2064051f882f0bd1",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 1450,
+        "y": 1260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "19d90c9f7e90271c",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Wrong order message",
+        "func": "msg.payload = \"Wrong order number\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1880,
+        "y": 920,
+        "wires": [
+            [
+                "9cb432dcc4778b8d"
+            ]
+        ]
+    },
+    {
+        "id": "9f582addf6042164",
+        "type": "ui_button",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "group": "af2c48eff64727b3",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Employer review",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 140,
+        "y": 1600,
+        "wires": [
+            [
+                "9a3501cce32665c6"
+            ]
+        ]
+    },
+    {
+        "id": "9a3501cce32665c6",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "Read handle list from database",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nvar orderNumberCheck = flow.get(\"OrderNumberEmployer\")\n\nif (orderNumberCheck == \"\"){\n    msg.topic =\n        \"USE jordan_onlineshop_new; SELECT Shipment_date, Shipment_OrderNumber, Shipment_Number, Employee_Name FROM jordan_onlineshop_new.Shipment JOIN Employee ON Shipment.Handle_By_ID = Employee.Employee_ID;\";\n}\n\nelse if (orderNumberCheck > 0){\n    msg.topic = \n        \"USE jordan_onlineshop_new; SELECT Shipment_date, Shipment_OrderNumber, Shipment_Number, Employee_Name FROM jordan_onlineshop_new.Shipment JOIN Employee ON Shipment.Handle_By_ID = Employee.Employee_ID WHERE Shipment_OrderNumber = '\"+ orderNumberCheck +\"';\";\n    }\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 1600,
+        "wires": [
+            [
+                "e1da9f4e05ddb4be"
+            ]
+        ]
+    },
+    {
+        "id": "ece1b69fe534e746",
+        "type": "ui_table",
+        "z": "dd347681f42c4e85",
+        "group": "af2c48eff64727b3",
+        "name": "Handle list",
+        "order": 3,
+        "width": 15,
+        "height": 10,
+        "columns": [],
+        "outputs": 0,
+        "cts": false,
+        "x": 1150,
+        "y": 1600,
+        "wires": []
+    },
+    {
+        "id": "e1da9f4e05ddb4be",
+        "type": "mysql",
+        "z": "dd347681f42c4e85",
+        "mydb": "9c77069e9f15adb9",
+        "name": "",
+        "x": 670,
+        "y": 1600,
+        "wires": [
+            [
+                "1df1302fe4d9c1a6"
+            ]
+        ]
+    },
+    {
+        "id": "1df1302fe4d9c1a6",
+        "type": "function",
+        "z": "dd347681f42c4e85",
+        "name": "display order detail",
+        "func": "var date = new Date().toLocaleString('CN-HK');\nconsole.log(date);\n\nmsg.payload = msg.payload[1]\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 890,
+        "y": 1700,
+        "wires": [
+            [
+                "ece1b69fe534e746"
+            ]
+        ]
+    },
+    {
+        "id": "3e14a84a867407b6",
+        "type": "ui_text_input",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "label": "Order number",
+        "tooltip": "",
+        "group": "af2c48eff64727b3",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "mode": "text",
+        "delay": 300,
+        "topic": "topic",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "msg",
+        "x": 140,
+        "y": 1680,
+        "wires": [
+            [
+                "4a92565b70e843a5"
+            ]
+        ]
+    },
+    {
+        "id": "4a92565b70e843a5",
+        "type": "change",
+        "z": "dd347681f42c4e85",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "OrderNumberEmployer",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 390,
+        "y": 1780,
+        "wires": [
+            [
+                "7cc9839eda75024b"
+            ]
+        ]
+    },
+    {
+        "id": "7cc9839eda75024b",
+        "type": "debug",
+        "z": "dd347681f42c4e85",
+        "name": "debug 9",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 660,
+        "y": 1780,
+        "wires": []
+    },
+    {
+        "id": "ba90cc905df7af3e",
+        "type": "ui_spacer",
+        "z": "dd347681f42c4e85",
+        "name": "spacer",
+        "group": "cd6c3df02b4c96ad",
+        "order": 2,
+        "width": 16,
+        "height": 1
+    },
+    {
+        "id": "6028a468b4ed087a",
+        "type": "ui_spacer",
+        "z": "dd347681f42c4e85",
+        "name": "spacer",
+        "group": "cd6c3df02b4c96ad",
+        "order": 4,
+        "width": 16,
+        "height": 1
+    },
+    {
+        "id": "063a1a4252a92e07",
+        "type": "ui_spacer",
+        "z": "dd347681f42c4e85",
+        "name": "spacer",
+        "group": "cd6c3df02b4c96ad",
+        "order": 6,
+        "width": 16,
+        "height": 1
+    },
+    {
+        "id": "6743686d40a4d293",
+        "type": "ui_spacer",
+        "z": "dd347681f42c4e85",
+        "name": "spacer",
+        "group": "cd6c3df02b4c96ad",
+        "order": 9,
+        "width": 8,
+        "height": 1
+    },
+    {
+        "id": "0e7dc1d3f377b692",
+        "type": "ui_spacer",
+        "z": "dd347681f42c4e85",
+        "name": "spacer",
+        "group": "cd6c3df02b4c96ad",
+        "order": 11,
+        "width": 8,
+        "height": 1
+    },
+    {
+        "id": "4dcb44b11a0a20df",
+        "type": "ui_spacer",
+        "z": "dd347681f42c4e85",
+        "name": "spacer",
+        "group": "eaba5ebd28965f80",
+        "order": 3,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "c9168209501426c5",
+        "type": "ui_spacer",
+        "z": "dd347681f42c4e85",
+        "name": "spacer",
+        "group": "eaba5ebd28965f80",
+        "order": 5,
+        "width": 4,
+        "height": 1
+    },
+    {
+        "id": "ad6d7b0459a65b12",
+        "type": "ui_spacer",
+        "z": "dd347681f42c4e85",
+        "name": "spacer",
+        "group": "eaba5ebd28965f80",
+        "order": 6,
+        "width": 4,
+        "height": 1
+    },
+    {
+        "id": "0c3cb7cbf3213c01",
+        "type": "ui_spacer",
+        "z": "dd347681f42c4e85",
+        "name": "spacer",
+        "group": "2f3ee2ae7f579321",
+        "order": 3,
+        "width": 4,
+        "height": 1
+    },
+    {
+        "id": "b55de8012f39dfff",
+        "type": "ui_spacer",
+        "z": "dd347681f42c4e85",
+        "name": "spacer",
+        "group": "2f3ee2ae7f579321",
+        "order": 4,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "42b28467cf146963",
+        "type": "ui_spacer",
+        "z": "dd347681f42c4e85",
+        "name": "spacer",
+        "group": "2f3ee2ae7f579321",
+        "order": 6,
+        "width": 4,
+        "height": 1
+    },
+    {
+        "id": "362174bda71ff148",
+        "type": "ui_spacer",
+        "z": "dd347681f42c4e85",
+        "name": "spacer",
+        "group": "2f3ee2ae7f579321",
+        "order": 7,
+        "width": 14,
+        "height": 1
+    },
+    {
+        "id": "6d086ae51502bae0",
+        "type": "ui_spacer",
+        "z": "dd347681f42c4e85",
+        "name": "spacer",
+        "group": "2f3ee2ae7f579321",
+        "order": 8,
+        "width": 14,
+        "height": 1
+    },
+    {
+        "id": "fd5e70a0ee6b5ccf",
+        "type": "ui_spacer",
+        "z": "dd347681f42c4e85",
+        "name": "spacer",
+        "group": "2f3ee2ae7f579321",
+        "order": 10,
+        "width": 9,
+        "height": 1
+    },
+    {
+        "id": "622fb383e47532c8",
+        "type": "ui_group",
+        "name": "Customer Order",
+        "tab": "45a3671f2ce92d61",
+        "order": 1,
+        "disp": true,
+        "width": "4",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "9c77069e9f15adb9",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "127.0.0.1",
+        "port": "3306",
+        "db": "jordan_onlineshop_new",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "cd6c3df02b4c96ad",
+        "type": "ui_group",
+        "name": "Customer Payment",
+        "tab": "45a3671f2ce92d61",
+        "order": 2,
+        "disp": true,
+        "width": "20",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "a18e0ba38e35c5bc",
+        "type": "ui_group",
+        "name": "Customer order checking",
+        "tab": "2446310d63e41995",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "ba6520daf462ba9e",
+        "type": "ui_group",
+        "name": "Customer checking table",
+        "tab": "2446310d63e41995",
+        "order": 3,
+        "disp": true,
+        "width": "23",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "2f3ee2ae7f579321",
+        "type": "ui_group",
+        "name": "Employee order checking",
+        "tab": "2af1847c0ba6c72c",
+        "order": 3,
+        "disp": true,
+        "width": 14,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "da2899a2d8f6efd1",
+        "type": "ui_group",
+        "name": "Group 2",
+        "tab": "2af1847c0ba6c72c",
+        "order": 2,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "eaba5ebd28965f80",
+        "type": "ui_group",
+        "name": "Customer Payment",
+        "tab": "2446310d63e41995",
+        "order": 2,
+        "disp": true,
+        "width": 14,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "af2c48eff64727b3",
+        "type": "ui_group",
+        "name": "Employer review",
+        "tab": "510d492a9bb0d475",
+        "order": 1,
+        "disp": true,
+        "width": "15",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "45a3671f2ce92d61",
+        "type": "ui_tab",
+        "name": "Jordan_onlineshop",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "2446310d63e41995",
+        "type": "ui_tab",
+        "name": "Customer order checking",
+        "icon": "dashboard",
+        "order": 7,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "2af1847c0ba6c72c",
+        "type": "ui_tab",
+        "name": "Employee Checking Page",
+        "icon": "dashboard",
+        "order": 6,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "510d492a9bb0d475",
+        "type": "ui_tab",
+        "name": "Employer review",
+        "icon": "dashboard",
+        "order": 8,
+        "disabled": false,
+        "hidden": false
+    }
+]
